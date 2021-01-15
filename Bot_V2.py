@@ -38,7 +38,7 @@ async def reload(ctx, extension):
         await ctx.send("Mamãe?")
 
 
-for arquivo in os.listdir("./engrenagens"):
+for arquivo in os.listdir("./Engrenagens"):
     if arquivo.endswith(".py"):
         client.load_extension(f'Engrenagens.{arquivo[:-3]}')
 
