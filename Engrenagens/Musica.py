@@ -4,8 +4,6 @@ from discord.ext import commands
 import youtube_dl
 import json
 import random
-import asyncio
-import requests
 
 class Musica(commands.Cog):
     def __init__(self, client):
