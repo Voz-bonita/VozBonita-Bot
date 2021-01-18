@@ -5,7 +5,7 @@ import youtube_dl
 import json
 import random
 
-class Musica(commands.Cog):
+class Music(commands.Cog):
     def __init__(self, client):
         self.client = client
 
@@ -128,5 +128,5 @@ class Musica(commands.Cog):
 
 
 def setup(client):
-    client.add_cog(Musica(client))
-    print("Música pronta!")
+    client.add_cog(Music(client))
+    print("DJ ready!")
