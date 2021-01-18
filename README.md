@@ -1,6 +1,6 @@
 # Voz bonita :robot:
 
-Discord Bot to help during RPG sessions.
+Discord Bot to help out players and masters during RPG sessions
 
 - Roll dices
     -
