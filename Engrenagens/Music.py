@@ -5,6 +5,7 @@ import youtube_dl
 import json
 import random
 
+
 class Music(commands.Cog):
     def __init__(self, client):
         self.client = client
@@ -124,7 +125,6 @@ class Music(commands.Cog):
     async def volume(self, ctx, volume):
         voice_client.source = discord.PCMVolumeTransformer(voice_client.source)
         voice_client.source.volume = float(volume)
-
 
 
 def setup(client):

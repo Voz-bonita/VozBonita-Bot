@@ -2,17 +2,18 @@ import discord
 from discord.ext import commands
 import random
 
+
 class Dices(commands.Cog):
     def __init__(self, client):
         self.client = client
 
     @commands.command()
-    async def roll(self,ctx,*,dices):
+    async def roll(self, ctx, *, dices):
         rolled = []
 
         dices = dices.split()
         if not isinstance(dices, str):
-            #Skips the operators
+            # Skips the operators
             for non_op in range(0, len(dices), 2):
                 rolled.append(dices[non_op])
         else:
@@ -20,18 +21,18 @@ class Dices(commands.Cog):
 
         result = []
         for roll in rolled:
-            #Check if its a dice
+            # Check if its a dice
             if 'd' in roll:
                 qnt, sides = map(int, roll.split('d'))
                 got = random.choices(range(1, sides), k=qnt)
                 result.append(sum(got))
-                #TODO possibility of showing at Discord every individual dice result
+                # TODO possibility of showing at Discord every individual dice result
             else:
                 result.append(roll)
 
         exp = ''
-        #Odd slots are operators
-        #Even slots are dices
+        # Odd slots are operators
+        # Even slots are dices
         for i in range(len(dices)):
             if i % 2 == 0:
                 exp += str(result[i//2])
@@ -59,7 +60,6 @@ class Dices(commands.Cog):
         )
 
         await ctx.send(embed=mscleave)
-
 
 
 def setup(client):
