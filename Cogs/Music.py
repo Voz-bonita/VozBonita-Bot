@@ -3,13 +3,14 @@ import discord
 from discord.ext import commands
 import youtube_dl
 import json
-import random
+from random import choice
 
 
 class Music(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.voice_client = {}
+        self.meta = {}
 
     @commands.command()
     async def join(self, ctx):
@@ -31,49 +32,29 @@ class Music(commands.Cog):
 
     @commands.command()
     async def play(self, ctx, *, musica):
-        try:
-            if ctx.author != "JP33#8256":
+        self.voice_client.stop()
+        options = {
+            'format': '140',
+            'extract audio': True,
+            'audio format': 'mp3',
+            'outtmpl': f'{musica}.%(ext)s',
+            'noplaylist': True,
+            'writeinfojson': True
+        }
 
-                self.voice_client.stop()
-                options = {
-                    'format': '140',
-                    'extract audio': True,
-                    'audio format': 'mp3',
-                    'outtmpl': f'{musica}.%(ext)s',
-                    'noplaylist': True,
-                    'writeinfojson': True
-                }
+        with youtube_dl.YoutubeDL(options) as ydl:
 
-                with youtube_dl.YoutubeDL(options) as ydl:
+            if musica.startswith("https://www.youtube.com/"):
+                ydl.download([musica])
 
-                    if musica.startswith("https://www.youtube.com/"):
-                        ydl.download([musica])
+            else:
+                ydl.download([f"ytsearch: {musica}"])
 
-                    else:
-                        ydl.download([f"ytsearch: {musica}"])
+        with open(f'{musica}.info.json') as file:
+            self.meta = json.load(file)
+            print(self.meta['fulltitle'])
 
-                with open(f'{musica}.info.json') as file:
-                    global meta
-                    meta = json.load(file)
-                    print(meta['fulltitle'])
-
-                self.voice_client.play(discord.FFmpegPCMAudio(f'{musica}.m4a'))
-
-
-
-        except NameError:
-            await ctx.send("I'm not connected to any voice channel :worried:")
-
-        except:
-            with open(f'{musica}.info.json') as file:
-                global meta2
-                meta2 = json.load(file)
-                print(meta['fulltitle'])
-
-            self.voice_client.play(discord.FFmpegPCMAudio(f'{musica}.m4a'))
-
-
-
+        self.voice_client.play(discord.FFmpegPCMAudio(f'{musica}.m4a'))
 
     @commands.command()
     async def stop(self, ctx):
@@ -81,32 +62,33 @@ class Music(commands.Cog):
 
     @commands.command()
     async def playing(self, ctx):
+        # Eventually part of this data can broke and return 0
         cores = [0x0000FF, 0xFF0000, 0x00FF00, 0x9900FF, 0xFF9900, 0x00FFFF]
-        autor = str(ctx.author)
-        date_up = meta['upload_date']
-        views = '{:.0f}'.format(meta['view_count']/10**3)
-        duracao = meta['duration']
+        date_up = self.meta['upload_date']
+        # views = '{:.0f}'.format(self.meta['view_count']/10**3)
+        length = self.meta['duration']
         video_info = discord.Embed(
-            title=meta['fulltitle'],
-            color=random.choice(cores)
+            title=self.meta['fulltitle'],
+            color=choice(cores)
         )
-        video_info.add_field(name='Title:',value=meta['fulltitle'])
-        video_info.add_field(name='Channel:', value=meta['uploader'])
+        video_info.add_field(name='Title:', value=self.meta['fulltitle'])
+        video_info.add_field(name='Channel:', value=self.meta['uploader'])
         video_info.add_field(name='Upload date:', value=date_up[:4] + '/' + date_up[4:6] + '/' + date_up[6:])
-        video_info.add_field(name='Length:', value=f'{int(duracao//60)}min {int(duracao%60)}s')
-        video_info.add_field(name='Dislikes:', value=meta['dislike_count'])
-        video_info.add_field(name='Likes:', value=meta['like_count'])
+        video_info.add_field(name='Length:', value=f'{int(length//60)}min {int(length%60)}s')
+        video_info.add_field(name='Likes:', value=self.meta['like_count'])
+        video_info.add_field(name='Dislikes:', value=self.meta['dislike_count'])
 
         await ctx.send(embed=video_info)
 
     @commands.command()
     async def description(self, ctx):
+        # Broke more often than playing command
         cores = [0x0000FF, 0xFF0000, 0x00FF00, 0x9900FF, 0xFF9900, 0x00FFFF]
         video_desc = discord.Embed(
             title='Descrição:',
-            color=random.choice(cores)
+            color=choice(cores)
         )
-        video_desc.add_field(name=meta['description'], value='')
+        video_desc.add_field(name=self.meta['description'], value='')
         await ctx.send(embed=video_desc)
 
     @commands.command()
