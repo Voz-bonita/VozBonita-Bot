@@ -32,6 +32,14 @@ async def reload(ctx, extension):
     await ctx.send(f"Cog {extension} reloaded")
 
 
+@client.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        await ctx.send("Sorry, I didn't understand")
+
+    elif isinstance(error, commands.errors.CommandInvokeError):
+        await ctx.send("I'm not connected to any voice channel :worried:")
+
 for file in os.listdir("./Cogs"):
     if file.endswith(".py"):
         client.load_extension(f'Cogs.{file[:-3]}')

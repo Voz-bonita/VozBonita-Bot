@@ -25,13 +25,9 @@ class Music(commands.Cog):
 
     @commands.command()
     async def leave(self, ctx):
-        try:
-            await self.voice_client.disconnect()
-            await ctx.send("Leaving voice channel")
-            self.voice_client = {}
-
-        except NameError:
-            await ctx.send("I'm not connected to any voice channel :worried:")
+        await self.voice_client.disconnect()
+        await ctx.send("Leaving voice channel")
+        self.voice_client = {}
 
     @commands.command()
     async def play(self, ctx, *, musica):
