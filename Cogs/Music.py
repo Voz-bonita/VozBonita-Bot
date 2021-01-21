@@ -9,14 +9,13 @@ import random
 class Music(commands.Cog):
     def __init__(self, client):
         self.client = client
-
+        self.voice_client = {}
 
     @commands.command()
     async def join(self, ctx):
         try:
             canal = ctx.author.voice.channel
-            global voice_client
-            voice_client = await canal.connect()
+            self.voice_client = await canal.connect()
 
         except AttributeError:
             await ctx.send("You gotta be connected to a voice chancel")
@@ -27,8 +26,9 @@ class Music(commands.Cog):
     @commands.command()
     async def leave(self, ctx):
         try:
-            await voice_client.disconnect()
+            await self.voice_client.disconnect()
             await ctx.send("Leaving voice channel")
+            self.voice_client = {}
 
         except NameError:
             await ctx.send("I'm not connected to any voice channel :worried:")
@@ -38,7 +38,7 @@ class Music(commands.Cog):
         try:
             if ctx.author != "JP33#8256":
 
-                voice_client.stop()
+                self.voice_client.stop()
                 options = {
                     'format': '140',
                     'extract audio': True,
@@ -61,7 +61,7 @@ class Music(commands.Cog):
                     meta = json.load(file)
                     print(meta['fulltitle'])
 
-                voice_client.play(discord.FFmpegPCMAudio(f'{musica}.m4a'))
+                self.voice_client.play(discord.FFmpegPCMAudio(f'{musica}.m4a'))
 
 
 
@@ -74,14 +74,14 @@ class Music(commands.Cog):
                 meta2 = json.load(file)
                 print(meta['fulltitle'])
 
-            voice_client.play(discord.FFmpegPCMAudio(f'{musica}.m4a'))
+            self.voice_client.play(discord.FFmpegPCMAudio(f'{musica}.m4a'))
 
 
 
 
     @commands.command()
     async def stop(self, ctx):
-        voice_client.stop()
+        self.voice_client.stop()
 
     @commands.command()
     async def playing(self, ctx):
@@ -115,16 +115,16 @@ class Music(commands.Cog):
 
     @commands.command()
     async def resume(self, ctx):
-        voice_client.resume()
+        self.voice_client.resume()
 
     @commands.command()
     async def pause(self, ctx):
-        voice_client.pause()
+        self.voice_client.pause()
 
     @commands.command()
     async def volume(self, ctx, volume):
-        voice_client.source = discord.PCMVolumeTransformer(voice_client.source)
-        voice_client.source.volume = float(volume)
+        self.voice_client.source = discord.PCMVolumeTransformer(self.voice_client.source)
+        self.voice_client.source.volume = float(volume)
 
 
 def setup(client):
