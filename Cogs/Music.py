@@ -4,6 +4,7 @@ from discord.ext import commands
 import youtube_dl
 import json
 from random import choice
+import os
 
 
 class Music(commands.Cog):
@@ -32,7 +33,11 @@ class Music(commands.Cog):
 
     @commands.command()
     async def play(self, ctx, *, musica):
+        # Stop the current playing song
         self.voice_client.stop()
+
+        # Get all the file names before download the next audio
+        downloads = [file for file in os.listdir()]
         options = {
             'format': '140',
             'extract audio': True,
@@ -55,6 +60,15 @@ class Music(commands.Cog):
             print(self.meta['fulltitle'])
 
         self.voice_client.play(discord.FFmpegPCMAudio(f'{musica}.m4a'))
+
+        # Delete all audios previously downloaded
+        # TODO rework it in way that is possible to keep some files arbitrarily
+        for file in downloads:
+            if file.endswith('.m4a') or file.endswith('.info.json'):
+                print(f"Removed {file}")
+                os.remove(f"{os.getcwd()}/{file}")
+        downloads.clear()
+
 
     @commands.command()
     async def stop(self, ctx):
