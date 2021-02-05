@@ -10,14 +10,15 @@ import os
 class Music(commands.Cog):
     def __init__(self, client):
         self.client = client
+        self.colors = [0x0000FF, 0xFF0000, 0x00FF00, 0x9900FF, 0xFF9900, 0x00FFFF]
         self.voice_client = {}
         self.meta = {}
 
     @commands.command()
     async def join(self, ctx):
         try:
-            canal = ctx.author.voice.channel
-            self.voice_client = await canal.connect()
+            channel = ctx.author.voice.channel
+            self.voice_client = await channel.connect()
 
         except AttributeError:
             await ctx.send("You gotta be connected to a voice chancel")
@@ -55,7 +56,7 @@ class Music(commands.Cog):
             'noplaylist': True,
             'writeinfojson': True
         }
-
+        
         with youtube_dl.YoutubeDL(options) as ydl:
 
             if song.startswith("https://www.youtube.com/"):
@@ -65,13 +66,12 @@ class Music(commands.Cog):
                 ydl.download([f"ytsearch: {song}"])
 
         song_file = [file for file in os.listdir() if file.endswith('.m4a')][0][:-4]
-
+        
         with open(f'{song_file}.info.json') as file:
             self.meta = json.load(file)
             print(self.meta['fulltitle'])
 
         self.voice_client.play(discord.FFmpegPCMAudio(f'{song_file}.m4a'))
-        
 
     @commands.command()
     async def stop(self, ctx):
@@ -80,13 +80,12 @@ class Music(commands.Cog):
     @commands.command()
     async def playing(self, ctx):
         # Eventually part of this data can broke and return 0
-        cores = [0x0000FF, 0xFF0000, 0x00FF00, 0x9900FF, 0xFF9900, 0x00FFFF]
         date_up = self.meta['upload_date']
         # views = '{:.0f}'.format(self.meta['view_count']/10**3)
         length = self.meta['duration']
         video_info = discord.Embed(
             title=self.meta['fulltitle'],
-            color=choice(cores)
+            color=choice(self.colors)
         )
         video_info.add_field(name='Title:', value=self.meta['fulltitle'])
         video_info.add_field(name='Channel:', value=self.meta['uploader'])
@@ -100,10 +99,10 @@ class Music(commands.Cog):
     @commands.command()
     async def description(self, ctx):
         # Broke more often than playing command
-        cores = [0x0000FF, 0xFF0000, 0x00FF00, 0x9900FF, 0xFF9900, 0x00FFFF]
+        
         video_desc = discord.Embed(
             title='Descrição:',
-            color=choice(cores)
+            color=choice(self.colors)
         )
         video_desc.add_field(name=self.meta['description'], value='')
         await ctx.send(embed=video_desc)
