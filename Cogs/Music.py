@@ -32,34 +32,12 @@ class Music(commands.Cog):
         self.voice_client = {}
 
     @commands.command()
-    async def play(self, ctx, *, musica):
+    async def play(self, ctx, *, song):
         # Stop the current playing song
         self.voice_client.stop()
 
         # Get all the file names before download the next audio
         downloads = [file for file in os.listdir()]
-        options = {
-            'format': '140',
-            'extract audio': True,
-            'audio format': 'mp3',
-            'outtmpl': f'{musica}.%(ext)s',
-            'noplaylist': True,
-            'writeinfojson': True
-        }
-
-        with youtube_dl.YoutubeDL(options) as ydl:
-
-            if musica.startswith("https://www.youtube.com/"):
-                ydl.download([musica])
-
-            else:
-                ydl.download([f"ytsearch: {musica}"])
-
-        with open(f'{musica}.info.json') as file:
-            self.meta = json.load(file)
-            print(self.meta['fulltitle'])
-
-        self.voice_client.play(discord.FFmpegPCMAudio(f'{musica}.m4a'))
 
         # Delete all audios previously downloaded
         # TODO rework it in way that is possible to keep some files arbitrarily
@@ -69,6 +47,31 @@ class Music(commands.Cog):
                 os.remove(f"{os.getcwd()}/{file}")
         downloads.clear()
 
+        options = {
+            'format': '140',
+            'extract audio': True,
+            'audio format': 'mp3',
+            'outtmpl': f'{song}.%(ext)s',
+            'noplaylist': True,
+            'writeinfojson': True
+        }
+
+        with youtube_dl.YoutubeDL(options) as ydl:
+
+            if song.startswith("https://www.youtube.com/"):
+                ydl.download([song])
+
+            else:
+                ydl.download([f"ytsearch: {song}"])
+
+        song_file = [file for file in os.listdir() if file.endswith('.m4a')][0][:-4]
+
+        with open(f'{song_file}.info.json') as file:
+            self.meta = json.load(file)
+            print(self.meta['fulltitle'])
+
+        self.voice_client.play(discord.FFmpegPCMAudio(f'{song_file}.m4a'))
+        
 
     @commands.command()
     async def stop(self, ctx):
