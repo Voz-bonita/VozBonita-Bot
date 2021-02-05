@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from random import choice, randint
+from Cogs.Music import colors
 
 # You can add places if you want so
 path = "Cogs/Slap_words/"
@@ -23,7 +24,6 @@ class Tapas(commands.Cog):
         action += actions[possibilities]
 
         author = ctx.author.display_name
-        colors = [0x0000FF, 0xFF0000, 0x00FF00, 0x9900FF, 0xFF9900, 0x00FFFF]
         mscleave = discord.Embed(
             title=f'{author}\n{action} :game_die:',
             color=choice(colors)

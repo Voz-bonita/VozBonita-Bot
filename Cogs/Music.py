@@ -5,12 +5,12 @@ import youtube_dl
 import json
 from random import choice
 import os
+colors = [0x0000FF, 0xFF0000, 0x00FF00, 0x9900FF, 0xFF9900, 0x00FFFF]
 
 
 class Music(commands.Cog):
     def __init__(self, client):
         self.client = client
-        self.colors = [0x0000FF, 0xFF0000, 0x00FF00, 0x9900FF, 0xFF9900, 0x00FFFF]
         self.voice_client = {}
         self.meta = {}
 
@@ -85,7 +85,7 @@ class Music(commands.Cog):
         length = self.meta['duration']
         video_info = discord.Embed(
             title=self.meta['fulltitle'],
-            color=choice(self.colors)
+            color=choice(colors)
         )
         video_info.add_field(name='Title:', value=self.meta['fulltitle'])
         video_info.add_field(name='Channel:', value=self.meta['uploader'])
@@ -102,7 +102,7 @@ class Music(commands.Cog):
         
         video_desc = discord.Embed(
             title='Descrição:',
-            color=choice(self.colors)
+            color=choice(colors)
         )
         video_desc.add_field(name=self.meta['description'], value='')
         await ctx.send(embed=video_desc)

@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import random
+from Cogs.Music import colors
 
 
 class Dices(commands.Cog):
@@ -41,8 +42,6 @@ class Dices(commands.Cog):
                 exp += dices[i]
 
         author = ctx.author.display_name
-        colors = [0x0000FF, 0xFF0000, 0x00FF00, 0x9900FF, 0xFF9900, 0x00FFFF]
-
         mscleave = discord.Embed(
             title=f'{author}\nGot {eval(exp)} :game_die:',
             color=random.choice(colors)
@@ -52,11 +51,9 @@ class Dices(commands.Cog):
 
     @commands.command()
     async def calc(self, ctx, exp):
-        cores = [0x0000FF, 0xFF0000, 0x00FF00, 0x9900FF, 0xFF9900, 0x00FFFF]
-
         mscleave = discord.Embed(
             title=f'{eval(exp)}',
-            color=random.choice(cores)
+            color=random.choice(colors)
         )
 
         await ctx.send(embed=mscleave)
