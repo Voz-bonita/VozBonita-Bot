@@ -73,6 +73,8 @@ class Music(commands.Cog):
 
         self.voice_client.play(discord.FFmpegPCMAudio(f'{song_file}.m4a'))
 
+        await ctx.channel.purge(limit=100)
+
     @commands.command()
     async def stop(self, ctx):
         self.voice_client.stop()
