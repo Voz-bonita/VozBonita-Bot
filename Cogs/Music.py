@@ -56,7 +56,9 @@ class Music(commands.Cog):
             'noplaylist': True,
             'writeinfojson': True
         }
-        
+
+        await ctx.send(f":globe_with_meridians: Donwloading")
+
         with youtube_dl.YoutubeDL(options) as ydl:
 
             if song.startswith("https://www.youtube.com/"):
@@ -73,6 +75,7 @@ class Music(commands.Cog):
 
         self.voice_client.play(discord.FFmpegPCMAudio(f'{song_file}.m4a'))
 
+        # TODO create a way to mark song channel so it doesn't delete normal messages
         await ctx.channel.purge(limit=100)
 
     @commands.command()
